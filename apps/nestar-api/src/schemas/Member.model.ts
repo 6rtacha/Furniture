@@ -71,6 +71,11 @@ const MemberSchema = new Schema(
 			default: 0,
 		},
 
+		memberFollowings: {
+			type: Number,
+			default: 0,
+		},
+
 		memberPoints: {
 			type: Number,
 			default: 0,
