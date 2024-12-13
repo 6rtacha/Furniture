@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { ObjectId } from 'mongoose';
 import { PropertyLocation, PropertyStatus, PropertyType } from '../../enums/property.enum';
 import { IsOptional } from 'class-validator';
