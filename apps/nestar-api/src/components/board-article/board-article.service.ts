@@ -20,8 +20,8 @@ import { lookupMember, shapeIntoMongoObjectId } from '../../libs/config';
 export class BoardArticleService {
 	constructor(
 		@InjectModel('BoardArticle') private readonly boardArticleModel: Model<BoardArticle>,
-		private memberService: MemberService,
-		private viewService: ViewService,
+		private readonly memberService: MemberService,
+		private readonly viewService: ViewService,
 	) {}
 
 	public async createBoardArticle(memberId: ObjectId, input: BoardArticleInput): Promise<BoardArticle> {
