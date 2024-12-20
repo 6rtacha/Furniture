@@ -202,8 +202,6 @@ export class PropertyService {
 			likeGroup: LikeGroup.PROPERTY,
 		};
 
-		// Like Toggle via LikeService
-
 		const modifier: number = await this.likeService.toggleLike(input);
 		const result = await this.propertyStatsEditor({ _id: likeRefId, targetKey: 'propertyLikes', modifier: modifier });
 
