@@ -24,7 +24,7 @@ export class SocketGateway implements OnGatewayInit {
 	private logger: Logger = new Logger('SocketEventsGateway');
 	private summaryClient: number = 0;
 	private clientsAuthMap = new Map<WebSocket, Member>();
-	private messageList: MessagePayload[] = [];
+	private messagesList: MessagePayload[] = [];
 
 	constructor(private authService: AuthService) {}
 
@@ -45,7 +45,8 @@ export class SocketGateway implements OnGatewayInit {
 		}
 	}
 
-	public async handleConnection(client: WebSocket, req: any[]) {
+	public async handleConnection(client: WebSocket, req: any) {
+		this.logger.debug('Handle connection called');
 		const authMember = await this.retrieveAuth(req);
 		this.summaryClient++;
 		this.clientsAuthMap.set(client, authMember);
@@ -60,10 +61,10 @@ export class SocketGateway implements OnGatewayInit {
 			action: 'joined',
 		};
 		this.emitMessage(infoMsg);
-		client.send(JSON.stringify({ event: 'getMessages', list: this.messageList }));
+		client.send(JSON.stringify({ event: 'getMessages', list: this.messagesList }));
 	}
 
-	handleDisconnect(client: WebSocket) {
+	public async handleDisconnect(client: WebSocket) {
 		const authMember = this.clientsAuthMap.get(client);
 		this.summaryClient--;
 		this.clientsAuthMap.delete(client);
@@ -82,15 +83,16 @@ export class SocketGateway implements OnGatewayInit {
 	}
 	@SubscribeMessage('message')
 	public async handleMessage(client: WebSocket, payload: string): Promise<void> {
+		this.logger.debug('Handle message called');
 		const authMember = this.clientsAuthMap.get(client);
-		const newMessage: MessagePayload = { event: 'messsage', text: payload, memberData: authMember };
+		const newMessage: MessagePayload = { event: 'message', text: payload, memberData: authMember };
 
 		const clientNick: string = authMember?.memberNick ?? 'Guest';
 		this.logger.verbose(`NEW MESSAGE [${clientNick}]: ${payload}`);
-		this.emitMessage(newMessage);
 
-		this.messageList.push(newMessage);
-		if (this.messageList.length > 5) this.messageList.splice(0, this.messageList.length - 5);
+		this.messagesList.push(newMessage);
+		if (this.messagesList.length > 5) this.messagesList.splice(0, this.messagesList.length - 5);
+		this.emitMessage(newMessage);
 	}
 
 	private broadcastMessage(sender: WebSocket, message: InfoPayload | MessagePayload) {
