@@ -38,7 +38,7 @@ export class ProductService {
 
 			await this.memberService.memberStatsEditor({
 				_id: result.memberId,
-				targetKey: 'memberProperties',
+				targetKey: 'memberProducts',
 				modifier: 1,
 			});
 
@@ -91,7 +91,7 @@ export class ProductService {
 		if (soldAt || deletedAt) {
 			await this.memberService.memberStatsEditor({
 				_id: memberId,
-				targetKey: 'memberProperties',
+				targetKey: 'memberProducts',
 				modifier: -1,
 			});
 		}
@@ -259,8 +259,8 @@ export class ProductService {
 			productStatus: ProductStatus.ACTIVE,
 		};
 
-		if (productStatus === ProductStatus.SOLD) soldAt = moment().toDate();
-		else if (productStatus === ProductStatus.DELETE) deletedAt = moment().toDate();
+		if (productStatus === ProductStatus.ACTIVE) soldAt = moment().toDate();
+		else if (productStatus === ProductStatus.INREPAIR) deletedAt = moment().toDate();
 
 		const result = await this.productModel.findByIdAndUpdate(search, input, { new: true }).exec();
 		if (!result) throw new InternalServerErrorException(Message.UPDATE_FAILED);
@@ -268,7 +268,7 @@ export class ProductService {
 		if (soldAt || deletedAt) {
 			await this.memberService.memberStatsEditor({
 				_id: result.memberId,
-				targetKey: 'memberProperties',
+				targetKey: 'memberProducts',
 				modifier: -1,
 			});
 		}

@@ -38,7 +38,7 @@ export class PropertyService {
 
 			await this.memberService.memberStatsEditor({
 				_id: result.memberId,
-				targetKey: 'memberProperties',
+				targetKey: 'memberProducts',
 				modifier: 1,
 			});
 
@@ -91,7 +91,7 @@ export class PropertyService {
 		if (soldAt || deletedAt) {
 			await this.memberService.memberStatsEditor({
 				_id: memberId,
-				targetKey: 'memberProperties',
+				targetKey: 'memberProducts',
 				modifier: -1,
 			});
 		}
@@ -268,7 +268,7 @@ export class PropertyService {
 		if (soldAt || deletedAt) {
 			await this.memberService.memberStatsEditor({
 				_id: result.memberId,
-				targetKey: 'memberProperties',
+				targetKey: 'memberProducts',
 				modifier: -1,
 			});
 		}

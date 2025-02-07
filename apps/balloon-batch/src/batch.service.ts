@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Member } from 'apps/balloon-api/src/libs/dto/member/member';
-import { product } from 'apps/balloon-api/src/libs/dto/product/product';
+import { Product } from 'apps/balloon-api/src/libs/dto/product/product';
 import { MemberStatus, MemberType } from 'apps/balloon-api/src/libs/enums/member.enum';
-import { productStatus } from 'apps/balloon-api/src/libs/enums/product.enum';
+import { ProductStatus } from 'apps/balloon-api/src/libs/enums/product.enum';
 import { Model } from 'mongoose';
 
 @Injectable()
 export class BatchService {
 	constructor(
-		@InjectModel('product') private readonly productModel: Model<product>,
+		@InjectModel('product') private readonly productModel: Model<Product>,
 		@InjectModel('Member') private readonly memberModel: Model<Member>,
 	) {}
 
@@ -17,7 +17,7 @@ export class BatchService {
 		await this.productModel
 			.updateMany(
 				{
-					productStatus: productStatus.ACTIVE,
+					productStatus: ProductStatus.ACTIVE,
 				},
 				{ productRank: 0 },
 			)
@@ -32,14 +32,14 @@ export class BatchService {
 	}
 
 	public async batchTopProperties(): Promise<void> {
-		const properties: product[] = await this.productModel
+		const properties: Product[] = await this.productModel
 			.find({
-				productStatus: productStatus.ACTIVE,
+				productStatus: ProductStatus.ACTIVE,
 				productRank: 0,
 			})
 			.exec();
 
-		const promisedList = properties.map(async (ele: product) => {
+		const promisedList = properties.map(async (ele: Product) => {
 			const { _id, productLikes, productViews } = ele;
 			const rank = productLikes * 2 + productViews * 1;
 			return await this.productModel.findByIdAndUpdate(_id, { productRank: rank });
@@ -57,8 +57,8 @@ export class BatchService {
 			.exec();
 
 		const promisedList = agents.map(async (ele: Member) => {
-			const { _id, memberProperties, memberLikes, memberArticles, memberViews } = ele;
-			const rank = memberProperties * 5 + memberArticles * 3 + memberLikes * 2 + memberViews * 1;
+			const { _id, memberProducts, memberLikes, memberArticles, memberViews } = ele;
+			const rank = memberProducts * 5 + memberArticles * 3 + memberLikes * 2 + memberViews * 1;
 			return await this.memberModel.findByIdAndUpdate(_id, { memberRank: rank });
 		});
 		await Promise.all(promisedList);
