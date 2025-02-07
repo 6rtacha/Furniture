@@ -36,14 +36,14 @@ export class ProductUpdate {
 	productPrice?: number;
 
 	@IsOptional()
-	@Field(() => Number, { nullable: true })
-	productSquare?: number;
+	@Field(() => String, { nullable: true })
+	productShape?: string;
 
 	@IsOptional()
 	@IsInt()
 	@Min(1)
-	@Field(() => Int, { nullable: true })
-	productBeds?: number;
+	@Field(() => String, { nullable: true })
+	productColors?: string;
 
 	@IsOptional()
 	@IsInt()
@@ -62,7 +62,7 @@ export class ProductUpdate {
 
 	@IsOptional()
 	@Field(() => Boolean, { nullable: true })
-	productBarter?: boolean;
+	productPurchase?: boolean;
 
 	@IsOptional()
 	@Field(() => Boolean, { nullable: true })

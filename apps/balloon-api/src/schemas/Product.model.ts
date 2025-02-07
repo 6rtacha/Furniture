@@ -36,17 +36,18 @@ const ProductSchema = new Schema(
 			required: true,
 		},
 
-		productSquare: {
-			type: Number,
+		productShape: {
+			type: String,
 			required: true,
 		},
 
-		productBeds: {
-			type: Number,
+		productColors: {
+			type: String,
 			required: true,
 		},
 
 		productRooms: {
+			// how many people can ride
 			type: Number,
 			required: true,
 		},
@@ -80,7 +81,8 @@ const ProductSchema = new Schema(
 			type: String,
 		},
 
-		productBarter: {
+		productPurchase: {
+			// available for purchase
 			type: Boolean,
 			default: false,
 		},
@@ -104,7 +106,7 @@ const ProductSchema = new Schema(
 			type: Date,
 		},
 
-		constructedAt: {
+		createdAt: {
 			type: Date,
 		},
 	},

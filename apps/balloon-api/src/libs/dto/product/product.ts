@@ -28,11 +28,11 @@ export class Product {
 	@Field(() => Number)
 	productPrice: number;
 
-	@Field(() => Number)
-	productSquare: number;
+	@Field(() => String)
+	productShape: string;
 
-	@Field(() => Int)
-	productBeds: number;
+	@Field(() => String)
+	productColors: string;
 
 	@Field(() => Int)
 	productRooms: number;
@@ -57,7 +57,7 @@ export class Product {
 	productDesc?: string;
 
 	@Field(() => Boolean)
-	productBarter: boolean;
+	productPurchase: boolean;
 
 	@Field(() => Boolean)
 	productRent: boolean;
@@ -70,9 +70,6 @@ export class Product {
 
 	@Field(() => Date, { nullable: true })
 	deletedAt?: Date;
-
-	@Field(() => Date, { nullable: true })
-	constructedAt?: Date;
 
 	@Field(() => Date)
 	createdAt: Date;

@@ -1,9 +1,8 @@
 import { registerEnumType } from '@nestjs/graphql';
 
 export enum ProductType {
-	APARTMENT = 'APARTMENT',
-	VILLA = 'VILLA',
-	HOUSE = 'HOUSE',
+	RIDE = 'RIDE',
+	SHOW = 'SHOW',
 }
 registerEnumType(ProductType, {
 	name: 'ProductType',
@@ -11,8 +10,7 @@ registerEnumType(ProductType, {
 
 export enum ProductStatus {
 	ACTIVE = 'ACTIVE',
-	SOLD = 'SOLD',
-	DELETE = 'DELETE',
+	INREPAIR = 'INREPAIR',
 }
 registerEnumType(ProductStatus, {
 	name: 'ProductStatus',

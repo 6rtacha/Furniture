@@ -30,14 +30,14 @@ export class ProductInput {
 	productPrice: number;
 
 	@IsNotEmpty()
-	@Field(() => Number)
-	productSquare: number;
+	@Field(() => String)
+	productShape: string;
 
 	@IsNotEmpty()
 	@IsInt()
 	@Min(1)
-	@Field(() => Int)
-	productBeds: number;
+	@Field(() => String)
+	productColors: string;
 
 	@IsNotEmpty()
 	@IsInt()
@@ -56,17 +56,13 @@ export class ProductInput {
 
 	@IsOptional()
 	@Field(() => Boolean, { nullable: true })
-	productBarter?: boolean;
+	productPurchase?: boolean;
 
 	@IsOptional()
 	@Field(() => Boolean, { nullable: true })
 	productRent?: boolean;
 
 	memberId?: ObjectId;
-
-	@IsOptional()
-	@Field(() => Date, { nullable: true })
-	constructedAt?: Date;
 }
 
 @InputType()
