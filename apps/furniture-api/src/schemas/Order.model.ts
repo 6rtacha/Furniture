@@ -1,0 +1,31 @@
+import { Schema } from 'mongoose';
+import { OrderStatus } from '../libs/enums/product.enum';
+
+const OrderSchema = new Schema(
+	{
+		orderTotal: {
+			type: Number,
+			required: true,
+		},
+
+		orderDelivery: {
+			type: Number,
+			required: true,
+		},
+
+		orderStatus: {
+			type: String,
+			enum: OrderStatus,
+			default: OrderStatus.PAUSE,
+		},
+
+		memberId: {
+			type: Schema.Types.ObjectId,
+			required: true,
+			ref: 'Member',
+		},
+	},
+	{ timestamps: true, collection: 'orders' },
+);
+
+export default OrderSchema;
