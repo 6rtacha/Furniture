@@ -5,6 +5,7 @@ import { Server } from 'ws';
 import { AuthService } from '../components/auth/auth.service';
 import { Member } from '../libs/dto/member/member';
 import * as url from 'url';
+import { Notification1 } from '../libs/dto/notification/notification';
 
 interface MessagePayload {
 	event: string;
@@ -17,6 +18,11 @@ interface InfoPayload {
 	totalClients: number;
 	memberData: Member;
 	action: string;
+}
+
+interface NotificationPayload {
+	event: string;
+	notification: Notification1;
 }
 
 @WebSocketGateway({ transports: ['websocket'], secure: false })
@@ -78,9 +84,9 @@ export class SocketGateway implements OnGatewayInit {
 			memberData: authMember,
 			action: 'left',
 		};
-		// client - disconnect
 		this.broadcastMessage(client, infoMsg);
 	}
+
 	@SubscribeMessage('message')
 	public async handleMessage(client: WebSocket, payload: string): Promise<void> {
 		this.logger.debug('Handle message called');
@@ -95,6 +101,19 @@ export class SocketGateway implements OnGatewayInit {
 		this.emitMessage(newMessage);
 	}
 
+	@SubscribeMessage('notification')
+	public async handleNotification(client: WebSocket, payload: Notification1): Promise<void> {
+		this.logger.debug('Handle notification called');
+		const authMember = this.clientsAuthMap.get(client);
+		const notificationMessage: NotificationPayload = { event: 'notification', notification: payload };
+
+		const clientNick: string = authMember?.memberNick ?? 'Guest';
+		this.logger.verbose(`NEW NOTIFICATION [${clientNick}]: ${JSON.stringify(payload)}`);
+
+		// Send notification to the specific receiver
+		this.emitNotification(notificationMessage);
+	}
+
 	private broadcastMessage(sender: WebSocket, message: InfoPayload | MessagePayload) {
 		this.server.clients.forEach((client) => {
 			if (client !== sender && client.readyState === WebSocket.OPEN) {
@@ -106,6 +125,16 @@ export class SocketGateway implements OnGatewayInit {
 	private emitMessage(message: InfoPayload | MessagePayload) {
 		this.server.clients.forEach((client) => {
 			if (client.readyState === WebSocket.OPEN) {
+				client.send(JSON.stringify(message));
+			}
+		});
+	}
+
+	private emitNotification(message: NotificationPayload) {
+		const receiverId = message.notification.receiverId.toString();
+		this.server.clients.forEach((client) => {
+			const clientMember = this.clientsAuthMap.get(client);
+			if (client.readyState === WebSocket.OPEN && clientMember && clientMember._id.toString() === receiverId) {
 				client.send(JSON.stringify(message));
 			}
 		});

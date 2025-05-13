@@ -42,9 +42,9 @@ const NotificationSchema = new Schema(
 			ref: 'Member',
 		},
 
-		productId: {
+		projectId: {
 			type: Schema.Types.ObjectId,
-			ref: 'product',
+			ref: 'Project',
 		},
 
 		articleId: {
@@ -52,7 +52,7 @@ const NotificationSchema = new Schema(
 			ref: 'BoardArticle',
 		},
 	},
-	{ timestamps: true, collection: 'notifications' },
+	{ timestamps: true, collection: 'notification' },
 );
 
 export default NotificationSchema;

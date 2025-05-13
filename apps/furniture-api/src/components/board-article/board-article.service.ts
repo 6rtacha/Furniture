@@ -18,6 +18,9 @@ import { lookupAuthMemberLiked, lookupMember, shapeIntoMongoObjectId } from '../
 import { LikeService } from '../like/like.service';
 import { LikeInput } from '../../libs/dto/like/like.input';
 import { LikeGroup } from '../../libs/enums/like.enum';
+import { NotificationService } from '../notification/notification.service';
+import { NotificationInput } from '../../libs/dto/notification/notification.input';
+import { NotificationGroup, NotificationType } from '../../libs/enums/notification.enum';
 
 @Injectable()
 export class BoardArticleService {
@@ -26,6 +29,7 @@ export class BoardArticleService {
 		private readonly memberService: MemberService,
 		private readonly viewService: ViewService,
 		private readonly likeService: LikeService,
+		private notificationService: NotificationService,
 	) {}
 
 	public async createBoardArticle(memberId: ObjectId, input: BoardArticleInput): Promise<BoardArticle> {
@@ -146,6 +150,15 @@ export class BoardArticleService {
 			targetKey: 'articleLikes',
 			modifier: modifier,
 		});
+
+		const notification: NotificationInput = {
+			notificationType: NotificationType.LIKE,
+			notificationGroup: NotificationGroup.ARTICLE,
+			notificationTitle: 'You got like!',
+			authorId: memberId,
+			receiverId: target.memberId,
+		};
+		await this.notificationService.createNotification(notification);
 
 		if (!result) throw new InternalServerErrorException(Message.SOMETHING_WENT_WRONG);
 		return result;

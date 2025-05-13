@@ -61,6 +61,11 @@ const MemberSchema = new Schema(
 			default: 0,
 		},
 
+		memberProjects: {
+			type: Number,
+			default: 0,
+		},
+
 		memberArticles: {
 			type: Number,
 			default: 0,

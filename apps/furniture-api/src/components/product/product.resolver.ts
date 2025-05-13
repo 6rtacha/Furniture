@@ -38,8 +38,10 @@ export class ProductResolver {
 
 	@UseGuards(WithoutGuard)
 	@Query((returns) => Product)
-	public async getproduct(@Args('productId') input: string, @AuthMember('_id') memberId: ObjectId): Promise<Product> {
-		console.log('Mutation: getproduct');
+	public async getProduct(@Args('productId') input: string, @AuthMember('_id') memberId: ObjectId): Promise<Product> {
+		console.log('Query: getproduct');
+		console.log('input', input);
+
 		const productId = shapeIntoMongoObjectId(input);
 		return await this.productService.getproduct(memberId, productId);
 	}
@@ -63,7 +65,7 @@ export class ProductResolver {
 		@Args('input') input: ProductsInquiry,
 		@AuthMember('_id') memberId: ObjectId,
 	): Promise<Products> {
-		console.log('Mutation: getProducts');
+		console.log('Query: getProducts');
 		return await this.productService.getProducts(memberId, input);
 	}
 

@@ -9,10 +9,15 @@ import { OrdinaryInquiry } from '../../libs/dto/product/product.input';
 import { Products } from '../../libs/dto/product/product';
 import { LikeGroup } from '../../libs/enums/like.enum';
 import { lookupFavorite } from '../../libs/config';
+import { Projects } from '../../libs/dto/project/project';
+import { NotificationService } from '../notification/notification.service';
+import { MemberService } from '../member/member.service';
 
 @Injectable()
 export class LikeService {
 	constructor(@InjectModel('Like') private readonly likeModel: Model<Like>) {}
+	private readonly notificationService: NotificationService;
+	private readonly memberService: MemberService;
 
 	public async toggleLike(input: LikeInput): Promise<number> {
 		const search: T = { memberId: input.memberId, likeRefId: input.likeRefId },
@@ -24,7 +29,7 @@ export class LikeService {
 			modifier = -1;
 		} else {
 			try {
-				await this.likeModel.create(input);
+				const result = await this.likeModel.create(input);
 			} catch (err) {
 				console.log('Error, LikeModel:', err.message);
 				throw new BadRequestException(Message.CREATE_FAILED);
@@ -79,6 +84,47 @@ export class LikeService {
 			.exec();
 
 		const result: Products = { list: [], metaCounter: data[0].metaCounter };
+		result.list = data[0].list.map((ele) => ele.favoriteProduct);
+
+		console.log('result:', result);
+
+		return result;
+	}
+
+	public async getFavoriteProjects(memberId: ObjectId, input: OrdinaryInquiry): Promise<Projects> {
+		console.log('memberId', memberId);
+		console.log('input', input);
+		const { page, limit } = input;
+		const match: T = { likeGroup: LikeGroup.PROJECT, memberId: memberId };
+
+		const data: T = await this.likeModel
+			.aggregate([
+				{ $match: match },
+				{ $sort: { updatedAt: -1 } },
+				{
+					$lookup: {
+						from: 'projects',
+						localField: 'likeRefId',
+						foreignField: '_id',
+						as: 'favoriteProject',
+					},
+				},
+				{ $unwind: '$favoriteProject' },
+				{
+					$facet: {
+						list: [
+							{ $skip: (page - 1) * limit },
+							{ $limit: limit },
+							lookupFavorite,
+							{ $unwind: '$favoriteProject.memberData' },
+						],
+						metaCounter: [{ $count: 'total' }],
+					},
+				},
+			])
+			.exec();
+
+		const result: Projects = { list: [], metaCounter: data[0].metaCounter };
 		result.list = data[0].list.map((ele) => ele.favoriteProduct);
 
 		console.log('result:', result);

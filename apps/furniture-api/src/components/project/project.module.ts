@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { BoardArticleResolver } from './board-article.resolver';
-import { BoardArticleService } from './board-article.service';
-import BoardArticleSchema from '../../schemas/BoardArticle.model';
+import { ProjectResolver } from './project.resolver';
+import { ProjectService } from './project.service';
 import { MongooseModule } from '@nestjs/mongoose';
+import ProjectSchema from '../../schemas/Project.model';
 import { AuthModule } from '../auth/auth.module';
 import { ViewModule } from '../view/view.module';
 import { MemberModule } from '../member/member.module';
@@ -13,8 +13,8 @@ import { NotificationModule } from '../notification/notification.module';
 	imports: [
 		MongooseModule.forFeature([
 			{
-				name: 'BoardArticle',
-				schema: BoardArticleSchema,
+				name: 'Project',
+				schema: ProjectSchema,
 			},
 		]),
 		AuthModule,
@@ -23,7 +23,7 @@ import { NotificationModule } from '../notification/notification.module';
 		LikeModule,
 		NotificationModule,
 	],
-	providers: [BoardArticleResolver, BoardArticleService],
-	exports: [BoardArticleService],
+	providers: [ProjectResolver, ProjectService],
+	exports: [ProjectService],
 })
-export class BoardArticleModule {}
+export class ProjectModule {}

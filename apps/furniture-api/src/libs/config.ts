@@ -11,6 +11,7 @@ export const availableproductSorts = [
 	'productRank',
 	'productPrice',
 ];
+export const availableprojectSorts = ['createdAt', 'projectLikes', 'projectViews', 'projectRank', 'projectPrice'];
 
 export const availableBoardArticleSorts = ['createdAt', 'updatedAt', 'articleLikes', 'articleViews'];
 export const availableCommentSorts = ['createdAt', 'updatedAt'];
@@ -103,6 +104,15 @@ export const lookupMember = {
 	$lookup: {
 		from: 'members',
 		localField: 'memberId',
+		foreignField: '_id',
+		as: 'memberData',
+	},
+};
+
+export const lookupAuthor = {
+	$lookup: {
+		from: 'members',
+		localField: 'authorId',
 		foreignField: '_id',
 		as: 'memberData',
 	},

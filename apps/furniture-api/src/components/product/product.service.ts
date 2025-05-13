@@ -126,6 +126,8 @@ export class ProductService {
 			.exec();
 		if (!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
 
+		console.log('result: ', result[0]);
+
 		return result[0];
 	}
 
@@ -137,6 +139,7 @@ export class ProductService {
 			widthList,
 			heightList,
 			lengthList,
+			materialList,
 			periodsRange,
 			pricesRange,
 			options,
@@ -148,6 +151,7 @@ export class ProductService {
 		if (heightList && heightList.length) match.productHeight = { $in: heightList };
 		if (lengthList && lengthList.length) match.productLength = { $in: lengthList };
 		if (typeList && typeList.length) match.productType = { $in: typeList };
+		if (materialList && materialList.length) match.productMaterial = { $in: materialList };
 
 		if (pricesRange) match.productPrice = { $gte: pricesRange.start, $lte: pricesRange.end };
 		if (periodsRange) match.createdAt = { $gte: periodsRange.start, $lte: periodsRange.end };

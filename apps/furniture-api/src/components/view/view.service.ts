@@ -8,6 +8,7 @@ import { OrdinaryInquiry } from '../../libs/dto/product/product.input';
 import { ViewGroup } from '../../libs/enums/view.enum';
 import { lookupVisit } from '../../libs/config';
 import { Products } from '../../libs/dto/product/product';
+import { Projects } from '../../libs/dto/project/project';
 
 @Injectable()
 export class ViewService {
@@ -59,6 +60,45 @@ export class ViewService {
 			.exec();
 
 		const result: Products = { list: [], metaCounter: data[0].metaCounter };
+		result.list = data[0].list.map((ele) => ele.visitedProduct);
+
+		console.log('result:', result);
+
+		return result;
+	}
+
+	public async getVisitedProjects(memberId: ObjectId, input: OrdinaryInquiry): Promise<Projects> {
+		const { page, limit } = input;
+		const match: T = { viewGroup: ViewGroup.PROJECT, memberId: memberId };
+
+		const data: T = await this.viewModel
+			.aggregate([
+				{ $match: match },
+				{ $sort: { updatedAt: -1 } },
+				{
+					$lookup: {
+						from: 'projects',
+						localField: 'viewRefId',
+						foreignField: '_id',
+						as: 'visitedProject',
+					},
+				},
+				{ $unwind: '$visitedProject' },
+				{
+					$facet: {
+						list: [
+							{ $skip: (page - 1) * limit },
+							{ $limit: limit },
+							lookupVisit,
+							{ $unwind: '$visitedProject.memberData' },
+						],
+						metaCounter: [{ $count: 'total' }],
+					},
+				},
+			])
+			.exec();
+
+		const result: Projects = { list: [], metaCounter: data[0].metaCounter };
 		result.list = data[0].list.map((ele) => ele.visitedProduct);
 
 		console.log('result:', result);

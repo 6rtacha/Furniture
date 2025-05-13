@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { ObjectId } from 'mongoose';
-import { ProductLocation, ProductStatus, ProductType } from '../../enums/product.enum';
+import { ProductLocation, ProductMaterial, ProductStatus, ProductType } from '../../enums/product.enum';
 import { IsOptional } from 'class-validator';
 import { Member, TotalCounter } from '../member/member';
 import { MeLiked } from '../like/like';
@@ -28,8 +28,8 @@ export class Product {
 	@Field(() => Number)
 	productPrice: number;
 
-	@Field(() => String)
-	productMaterial: string;
+	@Field(() => ProductMaterial)
+	productMaterial: ProductMaterial;
 
 	@Field(() => String)
 	productColors: string;

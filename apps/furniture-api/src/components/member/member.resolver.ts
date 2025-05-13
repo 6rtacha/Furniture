@@ -92,7 +92,10 @@ export class MemberResolver {
 		@AuthMember('_id') memberId: ObjectId,
 	): Promise<Member> {
 		console.log('Mutation: likeTargetMember');
+
 		const likeRefId = shapeIntoMongoObjectId(input);
+		console.log('likeRefId', likeRefId);
+
 		return await this.memberService.likeTargetMember(memberId, likeRefId);
 	}
 
@@ -175,6 +178,7 @@ export class MemberResolver {
 				if (!result) throw new Error(Message.UPLOAD_FAILED);
 
 				uploadedImages[index] = url;
+				console.log('uploadedImages', uploadedImages);
 			} catch (err) {
 				console.log('Error, file missing!');
 			}

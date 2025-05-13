@@ -66,7 +66,7 @@ export class BoardArticlesInquiry {
 
 	@IsNotEmpty()
 	@Field(() => BAISearch)
-	search: BAISearch;
+	search?: BAISearch;
 }
 
 @InputType()

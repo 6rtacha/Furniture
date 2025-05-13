@@ -5,7 +5,7 @@ export enum ProductType {
 	BED = 'BED',
 	TABLE = 'TABLE',
 	CHAIR = 'CHAIR',
-	CABINET = 'CABIENT',
+	CABINET = 'CABINET',
 	OUTDOOR = 'OUTDOOR',
 	LAMP = 'LAMP',
 }
@@ -46,4 +46,17 @@ export enum OrderStatus {
 }
 registerEnumType(OrderStatus, {
 	name: 'OrderStatus',
+});
+
+export enum ProductMaterial {
+	WOOD = 'WOOD',
+	METAL = 'METAL',
+	FABRICS = 'FABRICS',
+	LEATHER = 'LEATHER',
+	VELVET = 'VELVET',
+	PLYWOOD = 'PLYWOOD',
+	GLASS = 'GLASS',
+}
+registerEnumType(ProductMaterial, {
+	name: 'ProductMaterial',
 });

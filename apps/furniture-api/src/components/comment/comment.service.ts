@@ -11,22 +11,53 @@ import { CommentUpdate } from '../../libs/dto/comment/comment.update';
 import { T } from '../../libs/types/common';
 import { lookupMember } from '../../libs/config';
 import { ProductService } from '../product/product.service';
+import { NotificationInput } from '../../libs/dto/notification/notification.input';
+import { NotificationGroup, NotificationType } from '../../libs/enums/notification.enum';
+import { Member } from '../../libs/dto/member/member';
+import { Project } from '../../libs/dto/project/project';
+import { ProjectService } from '../project/project.service';
+import { NotificationService } from '../notification/notification.service';
+import { BoardArticle } from '../../libs/dto/board-article/board-article';
 
 @Injectable()
 export class CommentService {
 	constructor(
 		@InjectModel('Comment') private readonly commentModel: Model<Comment>,
+		@InjectModel('Project') private readonly projectModel: Model<Project>,
+		@InjectModel('BoardArticle') private readonly boardArticleModel: Model<BoardArticle>,
+		@InjectModel('Member') private readonly memberModel: Model<Member>,
 		private readonly memberService: MemberService,
 		private readonly productService: ProductService,
 		private readonly boardArticleService: BoardArticleService,
+		private notificationService: NotificationService,
 	) {}
 
 	public async createComment(memberId: ObjectId, input: CommentInput): Promise<Comment> {
 		input.memberId = memberId;
+		let targetId: any = '';
+		if (input.commentGroup === 'PROJECT') {
+			const target: Project = await this.projectModel.findOne({ _id: input.commentRefId });
+			targetId = target.memberId;
+		} else if (input.commentGroup == 'MEMBER') {
+			const target: Member = await this.memberModel.findOne({ _id: input.commentRefId });
+			targetId = target._id;
+		} else if (input.commentGroup == 'ARTICLE') {
+			const target: BoardArticle = await this.boardArticleModel.findOne({ _id: input.commentRefId });
+			targetId = target.memberId;
+		}
 
 		let result = null;
 		try {
 			result = await this.commentModel.create(input);
+
+			const notification: NotificationInput = {
+				notificationType: NotificationType.COMMENT,
+				notificationGroup: result.commentGroup,
+				notificationTitle: 'You got a commment!',
+				authorId: memberId,
+				receiverId: targetId,
+			};
+			await this.notificationService.createNotification(notification);
 		} catch (err) {
 			console.log('Error, Service.model:', err.message);
 			throw new BadRequestException(Message.CREATE_FAILED);
