@@ -22,6 +22,9 @@ import { lookup } from 'dns';
 import { LikeService } from '../like/like.service';
 import { LikeInput } from '../../libs/dto/like/like.input';
 import { LikeGroup } from '../../libs/enums/like.enum';
+import { NotificationInput } from '../../libs/dto/notification/notification.input';
+import { NotificationGroup, NotificationType } from '../../libs/enums/notification.enum';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class ProductService {
@@ -30,6 +33,7 @@ export class ProductService {
 		private memberService: MemberService,
 		private viewService: ViewService,
 		private likeService: LikeService,
+		private notificationService: NotificationService,
 	) {}
 
 	public async createproduct(input: ProductInput): Promise<Product> {
@@ -218,6 +222,19 @@ export class ProductService {
 
 		const modifier: number = await this.likeService.toggleLike(input);
 		const result = await this.productStatsEditor({ _id: likeRefId, targetKey: 'productLikes', modifier: modifier });
+
+		if (modifier == 1) {
+			const notification: NotificationInput = {
+				notificationType: NotificationType.LIKE,
+				notificationGroup: NotificationGroup.PRODUCT,
+				notificationTitle: 'liked your product!',
+				authorId: memberId,
+				receiverId: target.memberId,
+			};
+			await this.notificationService.createNotification(notification);
+		} else {
+			console.log('like qaytarib olingdi');
+		}
 
 		if (!result) throw new InternalServerErrorException(Message.SOMETHING_WENT_WRONG);
 		return result;

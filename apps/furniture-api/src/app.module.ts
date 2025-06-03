@@ -9,6 +9,8 @@ import { ComponentsModule } from './components/components.module';
 import { DatabaseModule } from './database/database.module';
 import { T } from './libs/types/common';
 import { SocketModule } from './socket/socket.module';
+import { NoticeResolver } from './no-spec/components/notice/notice.resolver';
+import { NoticeService } from './no-spec/components/notice/notice.service';
 
 @Module({
 	imports: [
@@ -33,6 +35,6 @@ import { SocketModule } from './socket/socket.module';
 		SocketModule,
 	],
 	controllers: [AppController],
-	providers: [AppService, AppResolver],
+	providers: [AppService, AppResolver, NoticeResolver, NoticeService],
 })
 export class AppModule {}

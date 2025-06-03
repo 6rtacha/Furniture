@@ -23,19 +23,6 @@ export class NotificationResolver {
 		return await this.notificationService.updateNotification(input, memberId);
 	}
 
-	// @UseGuards(AuthGuard)
-	// @Query((returns) => Notification1)
-	// public async getNotification(
-	// 	@Args('notificationId') input: string,
-	// 	@AuthMember('_id') memberId: ObjectId,
-	// ): Promise<Notification1> {
-	// 	console.log('Query: getNotification');
-	// 	console.log('input', input);
-
-	// 	const productId = shapeIntoMongoObjectId(input);
-	// 	return await this.notificationService.getNotification(memberId, productId);
-	// }
-
 	@UseGuards(AuthGuard)
 	@Query(() => Notifications)
 	public async getAllNotifications(

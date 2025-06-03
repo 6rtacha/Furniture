@@ -128,7 +128,7 @@ export class BoardArticleService {
 			])
 			.exec();
 		if (!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
-
+		console.log('result', result);
 		return result[0];
 	}
 
