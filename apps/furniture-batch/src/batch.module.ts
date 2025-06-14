@@ -5,15 +5,15 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { MongooseModule } from '@nestjs/mongoose';
-import productSchema from 'apps/furniture-api/src/schemas/product.model';
 import MemberSchema from 'apps/furniture-api/src/schemas/Member.model';
+import ProductSchema from 'apps/furniture-api/src/schemas/product.model';
 
 @Module({
 	imports: [
 		ConfigModule.forRoot(),
 		DatabaseModule,
 		ScheduleModule.forRoot(),
-		MongooseModule.forFeature([{ name: 'product', schema: productSchema }]),
+		MongooseModule.forFeature([{ name: 'product', schema: ProductSchema }]),
 		MongooseModule.forFeature([{ name: 'Member', schema: MemberSchema }]),
 	],
 	controllers: [BatchController],
