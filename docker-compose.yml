@@ -1,5 +1,3 @@
-version: '3.3'
-
 services:
   furniture-api:
     container_name: furniture-api
@@ -39,3 +37,9 @@ networks:
 #furniture-next: localhost:4000 <=> container:3000
 #furniture-api: localhost:4001 <=> container:3007
 #furniture-batch: localhost:4002 <=> container:3008
+
+# docker compose up -d
+# docker compose stop
+# docker compose start
+# docker compose restart
+# docker compose stop && docker compose rm -f
