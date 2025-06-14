@@ -6,7 +6,7 @@ import { DatabaseModule } from './database/database.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { MongooseModule } from '@nestjs/mongoose';
 import MemberSchema from 'apps/furniture-api/src/schemas/Member.model';
-import ProductSchema from 'apps/furniture-api/src/schemas/product.model';
+import ProductSchema from 'apps/furniture-api/src/schemas/Product.model';
 
 @Module({
 	imports: [
