@@ -8,6 +8,7 @@ import { ViewModule } from '../view/view.module';
 import { MemberModule } from '../member/member.module';
 import { LikeModule } from '../like/like.module';
 import { NotificationModule } from '../notification/notification.module';
+import { RagModule } from '../rag/rag.module';
 
 @Module({
 	imports: [
@@ -22,6 +23,7 @@ import { NotificationModule } from '../notification/notification.module';
 		MemberModule,
 		LikeModule,
 		NotificationModule,
+		RagModule,
 	],
 	providers: [ProductResolver, ProductService],
 	exports: [ProductService],

@@ -25,16 +25,55 @@ import { LikeGroup } from '../../libs/enums/like.enum';
 import { NotificationInput } from '../../libs/dto/notification/notification.input';
 import { NotificationGroup, NotificationType } from '../../libs/enums/notification.enum';
 import { NotificationService } from '../notification/notification.service';
+import OpenAI from 'openai';
+import { RagService } from '../rag/rag.service';
 
 @Injectable()
 export class ProductService {
+	private openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 	constructor(
 		@InjectModel('product') private readonly productModel: Model<Product>,
 		private memberService: MemberService,
 		private viewService: ViewService,
 		private likeService: LikeService,
 		private notificationService: NotificationService,
+		private ragService: RagService,
 	) {}
+
+	async semanticSearch(query: string, limit = 5) {
+		// 1. Embed query
+		const embeddingResponse = await this.openai.embeddings.create({
+			model: 'text-embedding-3-small',
+			input: query,
+		});
+		const queryEmbedding = embeddingResponse.data[0].embedding;
+
+		// 2. Run vector search
+		const results = await this.productModel
+			.aggregate([
+				{
+					$vectorSearch: {
+						index: 'default', // 👈 Atlas index name
+						path: 'embedding',
+						queryVector: queryEmbedding,
+						numCandidates: 100,
+						limit,
+					},
+				},
+				{
+					$project: {
+						_id: 1,
+						name: 1,
+						description: 1,
+						price: 1,
+						score: { $meta: 'vectorSearchScore' },
+					},
+				},
+			])
+			.exec();
+
+		return results[0];
+	}
 
 	public async createproduct(input: ProductInput): Promise<Product> {
 		try {
@@ -46,6 +85,7 @@ export class ProductService {
 				modifier: 1,
 			});
 
+			await this.ragService.syncProduct(result);
 			return result;
 		} catch (err) {
 			console.log('Error, Service.model:', err.message);

@@ -14,6 +14,7 @@ import { SocketModule } from '../socket/socket.module';
 import { OrderItemModule } from './order-item/order-item.module';
 import { NoticeModule } from './notice/notice.module';
 import { AiModule } from './ai/ai.module';
+import { RagModule } from './rag/rag.module';
 
 @Module({
 	imports: [
@@ -32,6 +33,7 @@ import { AiModule } from './ai/ai.module';
 		OrderItemModule,
 		NoticeModule,
 		AiModule,
+		RagModule,
 	],
 })
 export class ComponentsModule {}

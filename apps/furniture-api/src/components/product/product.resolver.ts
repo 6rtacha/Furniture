@@ -23,6 +23,14 @@ import { AuthGuard } from '../auth/guards/auth.guard';
 export class ProductResolver {
 	constructor(private readonly productService: ProductService) {}
 
+	@Query(() => [Product]) // 👈 assumes Product GraphQL type exists
+	async semanticSearch(
+		@Args('query', { type: () => String }) query: string,
+		@Args('limit', { type: () => Number, nullable: true }) limit = 5,
+	) {
+		return this.productService.semanticSearch(query, limit);
+	}
+
 	@Roles(MemberType.AGENT)
 	@UseGuards(RolesGuard)
 	@Mutation(() => Product)

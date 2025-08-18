@@ -109,6 +109,11 @@ const ProductSchema = new Schema(
 			ref: 'Member',
 		},
 
+		productEmbedding: {
+			type: [Number],
+			index: 'vectorSearch',
+		},
+
 		soldAt: {
 			type: Date,
 		},
