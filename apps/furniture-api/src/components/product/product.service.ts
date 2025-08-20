@@ -40,21 +40,19 @@ export class ProductService {
 		private ragService: RagService,
 	) {}
 
-	async semanticSearch(query: string, limit = 5) {
-		// 1. Embed query
+	async semanticSearch(query: string, limit = 6) {
 		const embeddingResponse = await this.openai.embeddings.create({
 			model: 'text-embedding-3-small',
 			input: query,
 		});
 		const queryEmbedding = embeddingResponse.data[0].embedding;
 
-		// 2. Run vector search
 		const results = await this.productModel
 			.aggregate([
 				{
 					$vectorSearch: {
-						index: 'default', // 👈 Atlas index name
-						path: 'embedding',
+						index: 'atlasSearch', // Atlas index name
+						path: 'productEmbedding', // ✅ correct path
 						queryVector: queryEmbedding,
 						numCandidates: 100,
 						limit,
@@ -63,22 +61,59 @@ export class ProductService {
 				{
 					$project: {
 						_id: 1,
-						name: 1,
-						description: 1,
-						price: 1,
+						productTitle: 1,
+						productDesc: 1,
+						productPrice: 1,
+						productType: 1,
+						productStatus: 1,
+						productLocation: 1,
+						productAddress: 1,
+						productMaterial: 1,
+						productColors: 1,
+						productWidth: 1,
+						productHeight: 1,
+						productLength: 1,
+						productViews: 1,
+						productLikes: 1,
+						productComments: 1,
+						productRank: 1,
+						productImages: 1,
+						productPurchase: 1,
+						productRent: 1,
+						memberId: 1,
+						// productEmbedding: 1,
+						createdAt: 1,
+						updatedAt: 1,
+						soldAt: 1,
+						deletedAt: 1,
 						score: { $meta: 'vectorSearchScore' },
 					},
 				},
 			])
 			.exec();
 
-		return results[0];
+		console.log('results', results);
+
+		return results;
 	}
 
-	public async createproduct(input: ProductInput): Promise<Product> {
+	public async createProduct(input: ProductInput): Promise<Product> {
 		try {
-			const result = await this.productModel.create(input);
+			// 1. Create embedding before saving
+			const embeddingResponse = await this.openai.embeddings.create({
+				model: 'text-embedding-3-small',
+				input: `${input.productTitle} ${input.productType} ${input.productMaterial} ${input.productPrice} ${input.productDesc ?? ''}`,
+			});
 
+			const embedding = embeddingResponse.data[0].embedding;
+
+			// 2. Save product with embedding
+			const result = await this.productModel.create({
+				...input,
+				productEmbedding: embedding,
+			});
+
+			// 3. Update member stats
 			await this.memberService.memberStatsEditor({
 				_id: result.memberId,
 				targetKey: 'memberProducts',
@@ -351,5 +386,21 @@ export class ProductService {
 	public async productStatsEditor(input: StatisticModifier): Promise<Product> {
 		const { _id, targetKey, modifier } = input;
 		return await this.productModel.findByIdAndUpdate(_id, { $inc: { [targetKey]: modifier } }, { new: true }).exec();
+	}
+
+	async backfillEmbeddings() {
+		const products = await this.productModel.find({ productEmbedding: { $exists: false } });
+
+		for (const product of products) {
+			const embeddingResponse = await this.openai.embeddings.create({
+				model: 'text-embedding-3-small',
+				input: `${product.productTitle} ${product.productType} ${product.productMaterial} ${product.productPrice} ${product.productDesc ?? ''}`,
+			});
+
+			product.productEmbedding = embeddingResponse.data[0].embedding;
+			await product.save();
+		}
+
+		console.log(`Backfilled ${products.length} products`);
 	}
 }

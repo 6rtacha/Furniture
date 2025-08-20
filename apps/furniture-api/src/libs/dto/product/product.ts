@@ -71,6 +71,9 @@ export class Product {
 	@Field(() => String)
 	memberId: ObjectId;
 
+	@Field(() => [Number], { nullable: true })
+	productEmbedding?: number[];
+
 	@Field(() => Number, { nullable: true })
 	score?: number; // similarity score
 

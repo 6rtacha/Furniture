@@ -23,12 +23,15 @@ import { AuthGuard } from '../auth/guards/auth.guard';
 export class ProductResolver {
 	constructor(private readonly productService: ProductService) {}
 
+	@UseGuards(WithoutGuard)
 	@Query(() => [Product]) // 👈 assumes Product GraphQL type exists
-	async semanticSearch(
+	public async semanticSearch(
 		@Args('query', { type: () => String }) query: string,
 		@Args('limit', { type: () => Number, nullable: true }) limit = 5,
 	) {
-		return this.productService.semanticSearch(query, limit);
+		console.log('query', query);
+
+		return await this.productService.semanticSearch(query, limit);
 	}
 
 	@Roles(MemberType.AGENT)
@@ -42,7 +45,7 @@ export class ProductResolver {
 		input.memberId = memberId;
 		console.log('input', input);
 
-		return await this.productService.createproduct(input);
+		return await this.productService.createProduct(input);
 	}
 
 	@UseGuards(WithoutGuard)
