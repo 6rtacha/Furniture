@@ -3,6 +3,10 @@
 /node_modules
 /build
 
+.git
+Dockerfile
+.dockerignore
+
 # Logs
 logs
 *.log
