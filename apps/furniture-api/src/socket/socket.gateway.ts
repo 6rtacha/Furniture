@@ -41,7 +41,7 @@ export class SocketGateway implements OnGatewayInit {
 		this.logger.verbose(`WebSocket Server Initialized & total: [${this.summaryClient}]`);
 	}
 
-	private async retrieveAuth(req: any): Promise<Member> {
+	private async retrieveAuth(req: any): Promise<Member | null> {
 		try {
 			const parseUrl = url.parse(req.url, true);
 			const { token } = parseUrl.query;
@@ -51,7 +51,7 @@ export class SocketGateway implements OnGatewayInit {
 		}
 	}
 
-	public async handleConnection(client: WebSocket, req: any) {
+	public async handleConnection(client: WebSocket, req: any): Promise<void> {
 		this.logger.debug('Handle connection called');
 		const authMember = await this.retrieveAuth(req);
 		this.summaryClient++;
@@ -70,7 +70,7 @@ export class SocketGateway implements OnGatewayInit {
 		client.send(JSON.stringify({ event: 'getMessages', list: this.messagesList }));
 	}
 
-	public async handleDisconnect(client: WebSocket) {
+	public async handleDisconnect(client: WebSocket): Promise<void> {
 		const authMember = this.clientsAuthMap.get(client);
 		this.summaryClient--;
 		this.clientsAuthMap.delete(client);
@@ -88,7 +88,7 @@ export class SocketGateway implements OnGatewayInit {
 	}
 
 	@SubscribeMessage('message')
-	public async handleMessage(client: WebSocket, payload: string): Promise<void> {
+	public handleMessage(client: WebSocket, payload: string) {
 		this.logger.debug('Handle message called');
 		const authMember = this.clientsAuthMap.get(client);
 		const newMessage: MessagePayload = { event: 'message', text: payload, memberData: authMember };
@@ -102,7 +102,7 @@ export class SocketGateway implements OnGatewayInit {
 	}
 
 	@SubscribeMessage('notification')
-	public async handleNotification(client: WebSocket, payload: Notification1): Promise<void> {
+	public handleNotification(client: WebSocket, payload: Notification1) {
 		this.logger.debug('Handle notification called');
 		const authMember = this.clientsAuthMap.get(client);
 		const notificationMessage: NotificationPayload = { event: 'notification', notification: payload };
