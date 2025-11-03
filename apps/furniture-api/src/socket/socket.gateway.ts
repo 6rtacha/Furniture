@@ -88,7 +88,7 @@ export class SocketGateway implements OnGatewayInit {
 	}
 
 	@SubscribeMessage('message')
-	public handleMessage(client: WebSocket, payload: string) {
+	public handleMessage(client: WebSocket, payload: string): void {
 		this.logger.debug('Handle message called');
 		const authMember = this.clientsAuthMap.get(client);
 		const newMessage: MessagePayload = { event: 'message', text: payload, memberData: authMember };
@@ -102,7 +102,7 @@ export class SocketGateway implements OnGatewayInit {
 	}
 
 	@SubscribeMessage('notification')
-	public handleNotification(client: WebSocket, payload: Notification1) {
+	public handleNotification(client: WebSocket, payload: Notification1): void {
 		this.logger.debug('Handle notification called');
 		const authMember = this.clientsAuthMap.get(client);
 		const notificationMessage: NotificationPayload = { event: 'notification', notification: payload };
