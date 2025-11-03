@@ -24,7 +24,7 @@ export class NotificationService {
 		const notification = await this.notificationModel.create(input);
 		console.log('notification', notification);
 
-		this.socketGateway.handleNotification(null, notification);
+		// this.socketGateway.handleNotification(null, notification);
 
 		return notification;
 	}
