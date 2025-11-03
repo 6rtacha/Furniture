@@ -19,7 +19,7 @@ import { NoticeService } from './no-spec/components/notice/notice.service';
 			driver: ApolloDriver,
 			playground: true,
 			uploads: false,
-			autoSchemaFile: true,
+			autoSchemaFile: 'schema.gql',
 			installSubscriptionHandlers: false,
 			formatError: (error: T) => {
 				const graphqlFormattedError = {
