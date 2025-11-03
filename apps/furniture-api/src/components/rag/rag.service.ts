@@ -56,7 +56,7 @@ export class RagService {
 			{ upsert: true },
 		);
 
-		this.logger.log(`✅ Synced product ${product._id}`);
+		return this.logger.log(`✅ Synced product ${product._id}`);
 	}
 
 	// naive char-based chunker (replace with token-based later if you want)
