@@ -20,6 +20,7 @@ import { NoticeService } from './no-spec/components/notice/notice.service';
 			playground: true,
 			uploads: false,
 			autoSchemaFile: true,
+			installSubscriptionHandlers: false,
 			formatError: (error: T) => {
 				const graphqlFormattedError = {
 					code: error?.extensions.code,
