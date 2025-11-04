@@ -11,6 +11,7 @@ import { T } from './libs/types/common';
 import { SocketModule } from './socket/socket.module';
 import { NoticeResolver } from './no-spec/components/notice/notice.resolver';
 import { NoticeService } from './no-spec/components/notice/notice.service';
+import { PubSub } from 'graphql-subscriptions';
 
 @Module({
 	imports: [
@@ -21,6 +22,7 @@ import { NoticeService } from './no-spec/components/notice/notice.service';
 			uploads: false,
 			autoSchemaFile: 'schema.gql',
 			installSubscriptionHandlers: false,
+			context: () => ({}),
 			formatError: (error: T) => {
 				const graphqlFormattedError = {
 					code: error?.extensions.code,
@@ -36,6 +38,15 @@ import { NoticeService } from './no-spec/components/notice/notice.service';
 		SocketModule,
 	],
 	controllers: [AppController],
-	providers: [AppService, AppResolver, NoticeResolver, NoticeService],
+	providers: [
+		AppService,
+		AppResolver,
+		NoticeResolver,
+		NoticeService,
+		{
+			provide: 'PUB_SUB',
+			useValue: new PubSub(),
+		},
+	],
 })
 export class AppModule {}
