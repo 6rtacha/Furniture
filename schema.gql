@@ -1,0 +1,129 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type MeLiked {
+	memberId: String!
+	likeRefId: String!
+	myFavorite: Boolean!
+}
+
+type MeFollowed {
+	followingId: String!
+	followerId: String!
+	myFollowing: Boolean!
+}
+
+type Follower {
+	_id: String!
+	followingId: String!
+	followerId: String!
+	createdAt: DateTime!
+	updatedAt: DateTime!
+	meLiked: [MeLiked!]
+	meFollowed: [MeFollowed!]
+	followerData: Member
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Following {
+	_id: String!
+	followingId: String!
+	followerId: String!
+	createdAt: DateTime!
+	updatedAt: DateTime!
+	meLiked: [MeLiked!]
+	meFollowed: [MeFollowed!]
+	followingData: Member
+}
+
+type Member {
+	_id: String!
+	memberType: MemberType!
+	memberStatus: MemberStatus!
+	memberAuthType: MemberAuthType!
+	memberPhone: String!
+	memberNick: String!
+	memberFullName: String
+	memberImage: String!
+	memberAddress: String
+	memberDesc: String
+	memberProducts: Int!
+	memberProjects: Int!
+	memberArticles: Int!
+	memberFollowers: Int!
+	memberFollowings: Int!
+	memberPoints: Int!
+	memberLikes: Int!
+	memberViews: Int!
+	memberComments: Int!
+	memberRank: Int!
+	memberWarnings: Int!
+	memberBlocks: Int!
+	deletedAt: DateTime
+	createdAt: DateTime!
+	updatedAt: DateTime!
+	accessToken: String
+	meLiked: [MeLiked!]
+	meFollowed: [MeFollowed!]
+}
+
+enum MemberType {
+	USER
+	AGENT
+	ADMIN
+}
+
+enum MemberStatus {
+	ACTIVE
+	BLOCK
+	DELETE
+}
+
+enum MemberAuthType {
+	PHONE
+	EMAIL
+	TELEGRAM
+}
+
+type TotalCounter {
+	total: Int
+}
+
+type Notification1 {
+	_id: String!
+	notificationType: NotificationType!
+	notificationStatus: NotificationStatus!
+	notificationGroup: NotificationGroup!
+	notificationTitle: String!
+	notificationDesc: String
+	authorId: String!
+	receiverId: String!
+	memberData: Member
+}
+
+enum NotificationType {
+	LIKE
+	COMMENT
+	FOLLOW
+}
+
+enum NotificationStatus {
+	WAIT
+	READ
+}
+
+enum NotificationGroup {
+	MEMBER
+	ARTICLE
+	PROJECT
+	PRODUCT
+}
+
+type Query {
+	sayHello: String!
+}
